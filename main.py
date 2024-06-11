@@ -51,3 +51,53 @@ def get_vector_store(docs):
 def get_llm():
     llm = Bedrock(model_id = "mistral.mistral-7b-instruct-v0:2", client = bedrock)
     return llm
+
+PROMPT = PromptTemplate(
+    template=prompt_template, input_variables=["context", "question"]
+)
+
+
+def get_llm_response(llm, vectorstore_faiss, query):
+
+    qa = RetrievalQA.from_chain_type(
+        llm = llm,
+        chain_type = "stuff",
+        retriever= vectorstore_faiss.as_retriever(
+        search_type="similarity", search_kwargs={"k": 3}),
+
+        return_source_documents = True,
+        chain_type_kwargs={"prompt": PROMPT})
+
+    
+    response = qa({"query": query})
+    return response['result']
+
+
+def main():
+    st.set_page_config("RAG")
+    st.header("End to end RAG using Bedrock")
+
+    user_question = st.text_input("Ask a question from the PDF file")
+
+    with st.sidebar:
+        st.title("Update & create vectore store")
+
+        if st.button("Store Vector"):
+            with st.spinner("Processing.."):
+                docs = get_documents()
+                get_vector_store(docs)
+                st.success("Done")
+
+        if st.button("Send"):
+            with st.spinner("Processing.."):
+               faiss_index = FAISS.load_local("faiss_local", bedrock_embedding, allow_dangerous_deserialization=True) 
+               llm = get_llm()
+               st.write(get_llm_response(llm,faiss_index,  user_question))
+
+               
+
+
+
+
+if __name__ == "__main__":
+    main()
