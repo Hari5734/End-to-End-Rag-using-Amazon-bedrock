@@ -25,3 +25,10 @@ def get_document():
     return docs
     # len(docs)
 
+
+def get_vector_store(docs):
+        vectorstore_faiss =  FAISS.from_documents(
+        docs,
+        bedrock_embedding)
+        vectorstore_faiss.save_local("faiss_local")
+
