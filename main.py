@@ -84,7 +84,7 @@ def main():
 
         if st.button("Store Vector"):
             with st.spinner("Processing.."):
-                docs = get_documents()
+                docs = get_document()
                 get_vector_store(docs)
                 st.success("Done")
 
