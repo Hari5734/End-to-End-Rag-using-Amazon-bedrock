@@ -8,6 +8,21 @@ from langchain.vectorstores import FAISS
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 
+
+prompt_template = """
+
+Human: Use the following pieces of context to provide a 
+concise answer to the question at the end but use atleast summarize with 
+100 words with detailed explantions. If you don't know the answer, 
+just say that you don't know, don't try to make up an answer.
+<context>
+{context}
+</context
+
+Question: {question}
+
+Assistant:"""
+
 #Bedrock client
 bedrock = boto3.client(service_name = "bedrock-runtime", region_name = "us-east-1")
 
@@ -32,3 +47,7 @@ def get_vector_store(docs):
         bedrock_embedding)
         vectorstore_faiss.save_local("faiss_local")
 
+
+def get_llm():
+    llm = Bedrock(model_id = "mistral.mistral-7b-instruct-v0:2", client = bedrock)
+    return llm
