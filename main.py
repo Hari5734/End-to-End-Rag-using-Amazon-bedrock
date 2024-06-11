@@ -8,4 +8,9 @@ from langchain.vectorstores import FAISS
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 
-print('OK')
+
+
+def get_document():
+    loader = PyPDFDirectoryLoader('data')
+    documents = loader.load
+
