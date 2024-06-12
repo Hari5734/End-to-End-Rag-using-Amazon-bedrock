@@ -45,8 +45,8 @@ def get_vector_store(docs):
         vectorstore_faiss =  FAISS.from_documents(
         docs,
         bedrock_embedding)
-        vectorstore_faiss.save_local("faiss_local")
 
+        vectorstore_faiss.save_local("faiss_index")
 
 def get_llm():
     llm = Bedrock(model_id = "mistral.mistral-7b-instruct-v0:2", client = bedrock)
